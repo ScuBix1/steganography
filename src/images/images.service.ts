@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/users.entity';
 import { DeepPartial, Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
+import { CertificatesService } from 'src/certificates/certificates.service';
 
 @Injectable()
 export class ImagesService {
