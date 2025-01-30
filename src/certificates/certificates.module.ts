@@ -7,8 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Certificate]), JwtModule.register({})],
-  exports: [CertificatesService],
   controllers: [CertificatesController],
   providers: [CertificatesService],
+  exports: [CertificatesService, TypeOrmModule],
 })
 export class CertificatesModule {}

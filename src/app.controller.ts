@@ -1,20 +1,24 @@
 import {
   BadRequestException,
   Controller,
+  Delete,
   FileTypeValidator,
   Get,
+  Param,
   ParseFilePipe,
   Post,
+  Request,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { User } from './auth/decorators/user.decorator';
 import { Public } from './auth/decorators/public.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ImagesService } from './images/images.service';
-import path from 'path';
+import { User } from './users/users.entity';
+import { UsersService } from './users/users.service';
+import { UUID } from 'crypto';
 
 @Controller()
 export class AppController {
@@ -23,12 +27,17 @@ export class AppController {
     private readonly imageService: ImagesService,
   ) {}
 
-  @Get()
-  async getHello(@User() user): Promise<string> {
-    return await this.appService.getHello(user.id);
+  @Get('users')
+  async getAllUsers(@Request() req): Promise<User[]> {
+    return await this.appService.getAllUser(req.user);
   }
 
-  @Post('/upload')
+  @Get('users/details')
+  async getAllUsersWithDetails(@Request() req): Promise<User[]> {
+    return await this.appService.getAllUsersWithDetails(req.user);
+  }
+
+  @Post('upload')
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -41,7 +50,7 @@ export class AppController {
     }),
   )
   uploadFile(
-    @User() user,
+    user: User,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -56,6 +65,11 @@ export class AppController {
     file: Express.Multer.File,
   ) {
     return this.imageService.create(file, user);
+  }
+
+  @Delete('users/:id')
+  async deleteUser(@Param('id') id: UUID, @Request() req): Promise<string> {
+    return this.appService.deleteUser(id, req.user);
   }
 
   @Public()

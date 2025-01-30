@@ -1,7 +1,6 @@
 import { UUID } from 'crypto';
 import { Image } from 'src/images/entities/image.entity';
-import { User } from 'src/users/users.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, ManyToOne, CreateDateColumn, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, CreateDateColumn, JoinColumn } from 'typeorm';
 
 @Entity()
 export class Certificate {
