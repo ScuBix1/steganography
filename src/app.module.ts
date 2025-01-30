@@ -8,6 +8,12 @@ import { User } from './users/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtGuard } from './auth/guards/jwt.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { ImagesModule } from './images/images.module';
+import { VerificationsModule } from './verifications/verifications.module';
+import { CertificatesModule } from './certificates/certificates.module';
+import { Verification } from './verifications/entities/verification.entity';
+import { Image } from './images/entities/image.entity';
+import { Certificate } from './certificates/entities/certificate.entity';
 
 @Module({
   imports: [
@@ -21,13 +27,16 @@ import { APP_GUARD } from '@nestjs/core';
         database: configService.get<string>('DB_NAME'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
-        entities: [User],
+        entities: [User, Image, Verification, Certificate],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UsersModule,
     AuthModule,
+    ImagesModule,
+    VerificationsModule,
+    CertificatesModule,
   ],
   controllers: [AppController],
   providers: [

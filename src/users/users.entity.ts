@@ -1,5 +1,8 @@
 import { UUID } from 'crypto';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Certificate } from 'src/certificates/entities/certificate.entity';
+import { Image } from 'src/images/entities/image.entity';
+import { Verification } from 'src/verifications/entities/verification.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
 export class User {
@@ -13,8 +16,14 @@ export class User {
   password: string;
 
   @Column()
+  admin: boolean;
+
+  @Column()
   firstName: string;
 
   @Column()
   lastName: string;
+
+  @OneToMany(() => Image, (image) => image.owner)
+  images: Image[];
 }
