@@ -1,26 +1,28 @@
-import { Injectable } from '@nestjs/common';
-import { CreateImageDto } from './dto/create-image.dto';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UpdateImageDto } from './dto/update-image.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/users/users.entity';
+import { DeepPartial, Repository } from 'typeorm';
+import { Image } from './entities/image.entity';
 
 @Injectable()
 export class ImagesService {
-  create(createImageDto: CreateImageDto) {
-    return 'This action adds a new image';
-  }
-
-  findAll() {
-    return `This action returns all images`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} image`;
-  }
-
-  update(id: number, updateImageDto: UpdateImageDto) {
-    return `This action updates a #${id} image`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} image`;
+  constructor(
+    @InjectRepository(Image)
+    private readonly imageRepository: Repository<Image>,
+  ) {}
+  async create(file: Express.Multer.File, user: User) {
+    try {
+      const newImage = this.imageRepository.create({
+        originalPath: `/src/assets/${file.originalname}`,
+        modifiedPath: `/src/assets/modified-${file.originalname}`,
+        createdAt: new Date(),
+        owner: user,
+        count: 0,
+      });
+      return await this.imageRepository.save(newImage);
+    } catch (err) {
+      throw new BadRequestException('Problème avec le fichier');
+    }
   }
 }
